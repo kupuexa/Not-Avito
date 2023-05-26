@@ -19,5 +19,9 @@ from main.views import create_post, search, edit_post, registration, delete_post
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    
+    
+    path('profile/', profile)
 
 ]
