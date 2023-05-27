@@ -52,6 +52,49 @@ def edit_post(request, post_id):
     return render(request, 'edit_record.html', {'form': form, 'record': record})
 
 
+def registration(request):
+    if request.method == "POST":
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data["password"])
+            new_user.save()
+            return render(request, 'main/registration_done.html', {'new_user': user_form})
+    else:
+        user_form = UserRegistrationForm()
+    return render(request, 'main/registration.html', {'user_form': user_form})
+
+
+def login(request):
+    if request.method == "POST":
+        ...
+
+
+def post(request):
+    id = request.GET.get("id", 0)
+    post = Post.objects.all()
+    post = post.filter(
+        id=id
+    )
+    if (post.exists()):
+        for pos in post:
+            print(f"{pos.title} {pos.description} {pos.category} {pos.contacts} {pos.owner}")
+    else:
+        id = 0
+    if id == 0:
+        return render(request, 'main/not_founded.html')
+    else:
+        return render(request, 'main/advertisement.html', context={
+            'id': pos.id,
+            'desc': pos.description,
+            'cat': pos.category,
+            'price': pos.price,
+            'contacts': pos.contacts,
+            'owner': pos.owner,
+            'publicationDate': pos.publicationDate,
+            'url': pos.photo})
+
+
 def profile(request):
     id = request.GET.get("id", 0)
     user = User.objects.all()
@@ -81,6 +124,22 @@ def profile(request):
             'email': profile.email,
             'last_login': profile.last_login})
 
+    # try:
+    #     if len(profile := user.objects.filter(id=2)) != 0:
+    #             return render(request, 'main/profile.html', context={'posts': user})
+    #     else:
+    #         return render(request, 'main/not_founded.html')
+    # except:
+    #     return render(request, 'main/not_founded.html')
+    return render(request, 'main/profile.html')
+
+    # users = UserModel.objects.filter(
+    #     first_name='1',
+    # ).order_by(
+    #     '-last_name'
+    # )
+    # for user in users:
+    #     print(user.last_name)
 
 def home(request):
     post = Post.objects.all()
@@ -115,15 +174,3 @@ def home(request):
         'url7':pposts[6].photo,
         'url8':pposts[7].photo
         })
-
-def registration(request):
-    if request.method == "POST":
-        user_form = UserRegistrationForm(request.POST)
-        if user_form.is_valid():
-            new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data["password"])
-            new_user.save()
-            return render(request, 'main/registration_done.html', {'new_user': user_form})
-    else:
-        user_form = UserRegistrationForm()
-    return render(request, 'main/registration.html', {'user_form': user_form})

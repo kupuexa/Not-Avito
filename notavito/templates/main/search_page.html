@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+{% for post in posts %}
+    <p>
+        {{post.image}}
+        {{post.title}}
+        {{post.description}}
+        ----
+    </p>
+{% endfor %}
+{% endblock %}
