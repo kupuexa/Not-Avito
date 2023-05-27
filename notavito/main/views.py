@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 
 def test(request):
     return render(request, template_name="main/footer.html")
+
+
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
@@ -48,6 +50,8 @@ def edit_post(request, post_id):
     else:
         form = PostForm(instance=record)
     return render(request, 'edit_record.html', {'form': form, 'record': record})
+
+
 def profile(request):
     id = request.GET.get("id", 0)
     user = User.objects.all()
@@ -77,14 +81,28 @@ def profile(request):
             'email': profile.email,
             'last_login': profile.last_login})
 
+
 def home(request):
     return render(request, 'main/home.html', context={
-        'url1':pposts[0].photo,
-        'url2':pposts[1].photo,
-        'url3':pposts[2].photo,
-        'url4':pposts[3].photo,
-        'url5':pposts[4].photo,
-        'url6':pposts[5].photo,
-        'url7':pposts[6].photo,
-        'url8':pposts[7].photo
-        })
+        'url1': pposts[0].photo,
+        'url2': pposts[1].photo,
+        'url3': pposts[2].photo,
+        'url4': pposts[3].photo,
+        'url5': pposts[4].photo,
+        'url6': pposts[5].photo,
+        'url7': pposts[6].photo,
+        'url8': pposts[7].photo
+    })
+
+
+def registration(request):
+    if request.method == "POST":
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data["password"])
+            new_user.save()
+            return render(request, 'main/registration_done.html', {'new_user': user_form})
+    else:
+        user_form = UserRegistrationForm()
+    return render(request, 'main/registration.html', {'user_form': user_form})
